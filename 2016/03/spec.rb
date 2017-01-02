@@ -22,5 +22,16 @@ RSpec.describe Triangle do
   end
 
   describe 'part two' do
+    it 'works simply' do
+      data = "1 2 5\n2 3 10\n3 4 25"
+      result = Triangle.verticals(data)
+      expect(result).to eq 1
+    end
+
+    it 'solves the problem' do
+      data = File.read('input')
+      result = Triangle.verticals(data)
+      expect(result).to eq 1544
+    end
   end
 end
