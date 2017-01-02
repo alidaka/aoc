@@ -1,18 +1,16 @@
 class Triangle
-  def self.legits(s)
-    s.split("\n").select{ |l| legit(l)}.length
+  def self.horizontals(s)
+    s.split("\n").select{ |l| horizontal(l)}.length
   end
 
-  def self.legit(s)
+  def self.horizontal(s)
     a, b, c = s.split(' ').reject(&:empty?).map{ |i| i.to_i}
     good?(a, b, c)
   end
 
   def self.good?(a, b, c)
-    good_kernel(a, b, c) && good_kernel(a, c, b) && good_kernel(b, c, a)
-  end
+    check = lambda { |a, b, c| (a+b)>c}
 
-  def self.good_kernel(a, b, c)
-    (a + b) > c
+    check.call(a, b, c) && check.call(a, c, b) && check.call(b, c, a)
   end
 end
