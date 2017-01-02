@@ -13,5 +13,11 @@ RSpec.describe Triangle do
       result = Triangle.legits(data)
       expect(result).to eq 1
     end
+
+    it 'solves the problem' do
+      data = File.read('input')
+      result = Triangle.legits(data)
+      expect(result).to eq 869
+    end
   end
 end
