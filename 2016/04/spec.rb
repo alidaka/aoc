@@ -39,6 +39,12 @@ RSpec.describe Room do
       result = Room.desect(data)
       expect(result).to eq (123+404+987)
     end
+
+    it 'solves the problem' do
+      data = File.read('input')
+      result = Room.desect(data)
+      expect(result).to eq 409147
+    end
   end
 
   describe 'part two' do
