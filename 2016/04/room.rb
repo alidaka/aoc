@@ -1,32 +1,48 @@
 class Room
-  # de-sectorize
-  def self.desect(s)
-    s.split("\n").reduce(0) {|sum, room| sum + analyze(room)}
-  end
+  attr_reader :encrypted_name, :flat_name, :checksum, :sector_id
 
-  def self.analyze(room)
-    flat_name, checksum, sector_id = parse(room)
-    expected = flat_name.chars
-      .each_with_object(Hash.new(0)) {|char, counts| counts[char] += 1}
-      .sort {|a, b| compare_counts(a, b)}
-      .take(5)
-      .reduce('') {|memo, count| memo += count[0]}
-
-    (expected == checksum) ? sector_id : 0
-  end
-
-  def self.parse(s)
+  def initialize(s)
     names = s.split('-')
     id = names.pop.split('[')
-    checksum = id.pop.chop
+    @checksum = id.pop.chop
 
-    names = names.reduce(&:+)
-    id = id[0].to_i
+    @flat_name = names.join
+    @encrypted_name = names.join('-')
+    @sector_id = id[0].to_i
+  end
 
-    [names, checksum, id]
+  # de-sectorize
+  def self.desect(s)
+    s.split("\n")
+      .map { |s| Room.new(s) }
+      .select(&:valid?)
+      .reduce(0) {|sum, room| sum + room.sector_id}
+  end
+
+  def valid?
+    expected = @flat_name.chars
+      .each_with_object(Hash.new(0)) {|char, counts| counts[char] += 1}
+      .sort {|a, b| self.class.compare_counts(a, b)}
+      .take(5)
+      .map(&:first)
+      .join
+
+    expected == @checksum
   end
 
   def self.compare_counts(a, b)
     a[1] == b[1] ? a[0] <=> b[0] : b[1] <=> a[1]
+  end
+
+  def self.shift(word, distance)
+    word.chars
+      .map {|char| shift_char(char, distance)}
+      .join
+  end
+
+  def self.shift_char(char, distance)
+    return ' ' if char == '-'
+
+    ((char.ord - 97 + distance) % 26 + 97).chr
   end
 end

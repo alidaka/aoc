@@ -4,10 +4,11 @@ RSpec.describe Room do
   describe 'part one' do
     it 'can parse a sample input' do
       data = 'aaaa-bbb-z-y-x-123[abxyz]'
-      result = Room.parse(data)
-      expect(result[0]).to eq 'aaaabbbzyx'
-      expect(result[1]).to eq 'abxyz'
-      expect(result[2]).to eq 123
+      room = Room.new(data)
+      expect(room.encrypted_name).to eq 'aaaa-bbb-z-y-x'
+      expect(room.flat_name).to eq 'aaaabbbzyx'
+      expect(room.checksum).to eq 'abxyz'
+      expect(room.sector_id).to eq 123
     end
 
     it 'identifies a simple positive case' do
@@ -48,5 +49,16 @@ RSpec.describe Room do
   end
 
   describe 'part two' do
+    it 'shifts a single word' do
+      word = 'qzmt'
+      result = Room.shift(word, 343)
+      expect(result).to eq 'very'
+    end
+
+    it 'shifts a phrase' do
+      phrase = 'qzmt-zixmtkozy-ivhz'
+      result = Room.shift(phrase, 343)
+      expect(result).to eq 'very encrypted name'
+    end
   end
 end
