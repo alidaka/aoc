@@ -1,5 +1,5 @@
 class Room
-  attr_reader :encrypted_name, :flat_name, :checksum, :sector_id
+  attr_reader :decrypted_name, :encrypted_name, :flat_name, :checksum, :sector_id
 
   def initialize(s)
     names = s.split('-')
@@ -13,10 +13,20 @@ class Room
 
   # de-sectorize
   def self.desect(s)
+    valids(s)
+      .map(&:sector_id)
+      .reduce(:+) || 0
+  end
+
+  def self.decode(s)
+    valids(s)
+      .find { |room| room.decrypted_name.include?('object') }
+  end
+
+  def self.valids(s)
     s.split("\n")
       .map { |s| Room.new(s) }
       .select(&:valid?)
-      .reduce(0) {|sum, room| sum + room.sector_id}
   end
 
   def valid?
@@ -28,6 +38,10 @@ class Room
       .join
 
     expected == @checksum
+  end
+
+  def decrypted_name
+    self.class.shift(@encrypted_name, @sector_id)
   end
 
   def self.compare_counts(a, b)

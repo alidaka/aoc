@@ -60,5 +60,12 @@ RSpec.describe Room do
       result = Room.shift(phrase, 343)
       expect(result).to eq 'very encrypted name'
     end
+
+    it 'solves the problem' do
+      data = File.read('input')
+      room = Room.decode(data)
+      expect(room.decrypted_name).to eq 'northpole object storage'
+      expect(room.sector_id).to eq 991
+    end
   end
 end
