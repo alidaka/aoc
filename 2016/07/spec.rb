@@ -45,35 +45,41 @@ RSpec.describe Protocol do
     end
   end
 
-  xdescribe 'part two: SSL, aba/bab' do
+  describe 'part two: SSL, aba/bab' do
     it 'handles a simple positive case' do
       address = 'aba[bab]xyz'
-      result = protocol.supports_ssl?(address)
+      result = Protocol.supports_ssl?(address)
       expect(result).to be true
     end
 
     it 'handles a simple negative case' do
       address = 'xyx[xyx]xyx'
-      result = protocol.supports_ssl?(address)
+      result = Protocol.supports_ssl?(address)
+      expect(result).to be false
+    end
+
+    it 'still does not count tripled letters' do
+      address = 'aaa[aaa]ekkee'
+      result = Protocol.supports_ssl?(address)
       expect(result).to be false
     end
 
     it 'handles a positive case with aba at the end' do
       address = 'aaa[kek]eke'
-      result = protocol.supports_ssl?(address)
+      result = Protocol.supports_ssl?(address)
       expect(result).to be true
     end
 
     it 'handles a positive case with red herrings' do
       address = 'zazbz[bzb]cdb'
-      result = protocol.supports_ssl?(address)
+      result = Protocol.supports_ssl?(address)
       expect(result).to be true
     end
 
     it 'solves the problem' do
       addresses = File.read('input')
       result = Protocol.count_supported_ssl(addresses)
-      expect(result).to eq 0
+      expect(result).to eq 258
     end
   end
 end

@@ -4,18 +4,23 @@ class Protocol
       .count {|address| supports_tls?(address)}
   end
 
+  def self.count_supported_ssl(s)
+    s.split("\n")
+      .count {|address| supports_ssl?(address)}
+  end
+
   def self.supports_ssl?(address)
     supernets, hypernets = parse(address)
-    abas = supernets.flat_map { |a| find_abas(a) }
-    babs = hypernets.flat_map { |a| find_abas(a) }
+    abas = supernets.flat_map {|a| find_abas(a)}
+    babs = hypernets.flat_map {|a| find_abas(a)}.map(&:reverse)
+    !(abas & babs).empty?
   end
 
   def self.parse(address)
-    chunks = address.split('[')
+    address.split('[')
       .flat_map {|a| a.split(']')}
-
-    chunks.each_with_index
-      .partition {|x| (x[1]%2)==0}
+      .each_with_index
+      .partition {|x, i| (i%2)==0}
       .map {|a| a.map(&:first)}
   end
 
@@ -39,7 +44,7 @@ class Protocol
     acc = []
     s.chars.each_cons(3) do |chars|
       if chars[0] == chars[2] && chars[0] != chars[1]
-        acc << chars
+        acc << chars.take(2)
       end
     end
 
