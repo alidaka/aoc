@@ -22,22 +22,22 @@ class Screen
       .each_with_object(Array.new(50, Array.new(6, false))) {|i,a| execute(i,a)}
   end
 
-  def execute(instruction, screen)
+  def self.execute(instruction, screen)
     case instruction.type
-    when :rect rect(screen, instruction.x, instruction.y)
-    when :x rotate_col(screen, instruction.index, instruction.amount)
-    when :y rotate_row(screen, instruction.index, instruction.amount)
+    when :rect then rect(screen, instruction.x, instruction.y)
+    when :x then rotate_col(screen, instruction.index, instruction.amount)
+    when :y then rotate_row(screen, instruction.index, instruction.amount)
     end
   end
 
-  def rect(screen, x, y)
+  def self.rect(screen, x, y)
     screen[0...x].each {|col| col[0...y] = true}
   end
 
-  def rotate_col(screen, column, amount)
+  def self.rotate_col(screen, column, amount)
   end
 
-  def rotate_row(screen, row, amount)
+  def self.rotate_row(screen, row, amount)
   end
 
   def self.to_instructions(input)
