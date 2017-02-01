@@ -16,10 +16,26 @@ class Screen
     end
   end
 
+  def self.pp(screen)
+    puts
+    screen.transpose
+      .each do |row|
+        row.each_with_index do |c,i|
+          print c == 0 ? '.' : '#'
+          print ' ' if (i%5) == 4
+        end
+
+        puts
+      end
+  end
+
   def self.follow(columns, rows, input)
-    to_instructions(input)
+    a = to_instructions(input)
       .inject(Array.new(columns){Array.new(rows, 0)}) {|a,i| execute(a,i)}
-      .flatten
+
+    pp a
+
+    a.flatten
       .reduce(&:+)
   end
 

@@ -17,7 +17,7 @@ RSpec.describe Screen do
     it 'does the problem' do
       instructions = File.read('input')
       result = Screen.follow(50, 6, instructions)
-      expect(result).to be 6
+      expect(result).to be 110
     end
   end
 end
