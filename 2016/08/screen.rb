@@ -16,15 +16,14 @@ class Screen
     end
   end
 
-  def self.follow(input)
-    # 50px wide 6px tall
+  def self.follow(columns, rows, input)
     to_instructions(input)
-      .each_with_object(Array.new(50, Array.new(6, 0))) {|i,a| execute(i,a)}
-      #.flatten
-      #.reduce(&:+)
+      .inject(Array.new(columns){Array.new(rows, 0)}) {|a,i| execute(a,i)}
+      .flatten
+      .reduce(&:+)
   end
 
-  def self.execute(instruction, screen)
+  def self.execute(screen, instruction)
     case instruction.type
     when :rect then rect(screen, instruction.x, instruction.y)
     when :x then rotate_col(screen, instruction.index, instruction.amount)
@@ -33,11 +32,16 @@ class Screen
   end
 
   def self.rect(screen, x, y)
-    screen[0...x].each {|col| col[0...y] = true}
+    screen.each_with_index do |col, i|
+      if i < x then
+        col[0...y] = Array.new(y, 1)
+      end
+    end
   end
 
   def self.rotate_col(screen, column, amount)
-    screen[column].rotate!(amount)
+    screen[column].rotate!(-amount)
+    screen
   end
 
   def self.rotate_row(screen, row, amount)

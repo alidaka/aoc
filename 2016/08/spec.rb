@@ -10,8 +10,14 @@ RSpec.describe Screen do
       rotate column x=1 by 1
       eos
 
-      result = Screen.follow(instructions)
-      expect(result).to be 0
+      result = Screen.follow(7, 3, instructions)
+      expect(result).to be 6
+    end
+
+    it 'does the problem' do
+      instructions = File.read('input')
+      result = Screen.follow(50, 6, instructions)
+      expect(result).to be 6
     end
   end
 end
