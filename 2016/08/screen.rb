@@ -19,7 +19,9 @@ class Screen
   def self.follow(input)
     # 50px wide 6px tall
     to_instructions(input)
-      .each_with_object(Array.new(50, Array.new(6, false))) {|i,a| execute(i,a)}
+      .each_with_object(Array.new(50, Array.new(6, 0))) {|i,a| execute(i,a)}
+      #.flatten
+      #.reduce(&:+)
   end
 
   def self.execute(instruction, screen)
@@ -35,9 +37,11 @@ class Screen
   end
 
   def self.rotate_col(screen, column, amount)
+    screen[column].rotate!(amount)
   end
 
   def self.rotate_row(screen, row, amount)
+    rotate_col(screen.transpose, row, amount).transpose
   end
 
   def self.to_instructions(input)
