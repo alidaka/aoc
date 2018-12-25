@@ -1,24 +1,20 @@
 #!/usr/bin/env ruby
 
 def overlap(string)
-  n = 1000
+  n = 2000
 
-  puts string.each_line
+  string.each_line
     .map(&Claim.method(:new))
     .each_with_object(Array.new(n) { Array.new(n, 0) }) do |claim, fabric|
-      puts fabric
-      (claim.y..claim.y + claim.height).each_entry do |y|
-        (claim.x..claim.x + claim.width).each_entry do |x|
-          puts "#{x}, #{y}"
+      (claim.y...claim.y + claim.height).each_entry do |y|
+        (claim.x...claim.x + claim.width).each_entry do |x|
           fabric[y][x] += 1
         end
       end
     end
-    .tap { |x| puts x.inspect }
-    #.map do |a| # TODO: there's got to be a way to do this point-free, procs, ...
-      #a.count(&1.send(:<=))
-    #end.reduce(&:+)
-  12
+    .map do |a| # TODO: there's got to be a way to do this point-free, procs, ...
+      a.count { |x| x > 1 }
+    end.reduce(&:+)
 end
 
 class Claim
@@ -43,7 +39,7 @@ if __FILE__ == $0
           #2 @ 3,1: 4x4
           #3 @ 5,5: 2x2
         HEREDOC
-        assert_equal(12, overlap(input))
+        assert_equal(4, overlap(input))
       end
 
       def test_part_two
