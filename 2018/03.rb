@@ -1,5 +1,15 @@
 #!/usr/bin/env ruby
 
+def flip(a, b)
+  b.call(a)
+end
+
+class UnboundMethod
+  def curry(arg)
+
+  end
+end
+
 def overlap(string)
   n = 2000
 
@@ -12,9 +22,28 @@ def overlap(string)
         end
       end
     end
-    .map do |a| # TODO: there's got to be a way to do this point-free, procs, ...
-      a.count { |x| x > 1 }
-    end.reduce(&:+)
+    .map(&Array.instance_method(:count).method(:bind))
+      .map(&Method.instance_method(:call).method(:bind))
+      .map(&:curry)
+      .map(&1.method(:<))
+    .reduce(&:+)
+      #.map {|x| x.method(:call).curry.call(&1.method(:<)) }
+    # .map(&1.method(:<))
+    
+
+    #$ .map(&Method.instance_method(:call).curry.call(&1.method(:<)).method(:bind))
+    #.map(&:call)
+    #.reduce(&:+)
+    #.map { |meth|
+      #meth.call(&1.method(:<))
+    #}
+
+    #.map(&Method.instance_method(:call(&1.method(:<)).curry))
+
+    #.map do |a| # TODO: there's got to be a way to do this point-free, procs, ...
+      #a.count(&1.method(:<))
+      #a.count { |x| x > 1 }
+    #end
 end
 
 def overlap2(string)
